@@ -1,10 +1,13 @@
-package com.bootcamplocator.app;
+package com.bootcamplocator.app.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+
+import com.bootcamplocator.app.fragment.MapFragment;
+import com.bootcamplocator.app.R;
 import com.google.android.gms.location.LocationListener;
-import android.se.omapi.SEService;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -17,11 +20,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks,LocationListener {
 
 
     private GoogleApiClient mGoogleApiClient;
+    private MapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +37,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+        mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.container);
         if (mapFragment == null){
             mapFragment = MapFragment.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.container,mapFragment).commitAllowingStateLoss();
@@ -42,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     @Override
     public void onLocationChanged(Location location) {
         Log.e("location_changed","logitude"+location.getLongitude()+" latitude"+location.getLatitude());
+        mapFragment.setUserMarker(new LatLng(location.getLatitude(),location.getLongitude()));
 
     }
 
